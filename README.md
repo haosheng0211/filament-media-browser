@@ -1,7 +1,6 @@
 # Filament Media Browser
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/haosheng0211/filament-media-browser.svg?style=flat-square)](https://packagist.org/packages/haosheng0211/filament-media-browser)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/haosheng0211/filament-media-browser/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/haosheng0211/filament-media-browser/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/haosheng0211/filament-media-browser.svg?style=flat-square)](https://packagist.org/packages/haosheng0211/filament-media-browser)
 
 A standalone Filament v3 media browser powered by Laravel Storage — no database required. Browse, upload, and manage files directly from the filesystem with folder navigation support.
@@ -29,6 +28,22 @@ Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="filament-media-browser-config"
+```
+
+Add the package views to your `tailwind.config.js` content array:
+
+```js
+// tailwind.config.js
+content: [
+    // ...existing paths
+    './vendor/haosheng0211/filament-media-browser/resources/views/**/*.blade.php',
+]
+```
+
+Then rebuild your assets:
+
+```bash
+npm run build
 ```
 
 Make sure the storage disk is linked (for the `public` disk):
@@ -95,7 +110,6 @@ MediaPicker::make('hero_image')
 |---|---|
 | `->multiple(bool)` | Enable multi-select mode |
 | `->maxItems(int)` | Maximum number of files (multiple mode) |
-| `->minItems(int)` | Minimum number of files (multiple mode) |
 | `->reorderable(bool)` | Enable drag-to-reorder (multiple mode, default: true) |
 | `->mediaType(string)` | `'image'` (default), `'media'`, or `'file'` |
 | `->mediaDisk(string)` | Override config disk |
@@ -127,13 +141,14 @@ The media browser communicates via Livewire events, so you can integrate it with
 **Open the browser** by dispatching the `open-media-browser` event:
 
 ```php
-// From Livewire
+// From Livewire — single file
 $this->dispatch('open-media-browser', statePath: 'data.image', mediaType: 'image');
 
-// With custom disk/directory
+// Multiple files with custom disk/directory
 $this->dispatch('open-media-browser',
-    statePath: 'data.file',
+    statePath: 'data.files',
     mediaType: 'file',
+    multiple: true,
     disk: 's3',
     directory: 'uploads',
 );
@@ -154,9 +169,17 @@ $this->dispatch('open-media-browser',
 ```php
 // Livewire
 #[On('media-selected')]
-public function onMediaSelected(string $statePath, string $url, string $alt, string $title): void
-{
-    // Use the selected media URL
+public function onMediaSelected(
+    string $statePath,
+    string $url,
+    string $alt,
+    string $title,
+    string $filename,
+    string $extension,
+    int $size,
+    string $mime,
+): void {
+    // Use the selected media URL and metadata
 }
 ```
 
@@ -169,8 +192,8 @@ public function onMediaSelected(string $statePath, string $url, string $alt, str
 
 | Event | Direction | Parameters |
 |---|---|---|
-| `open-media-browser` | You → Browser | `statePath`, `mediaType` (`image` \| `media` \| `file`), `disk?`, `directory?` |
-| `media-selected` | Browser → You | `statePath`, `url`, `alt`, `title` |
+| `open-media-browser` | You → Browser | `statePath`, `mediaType` (`image` \| `media` \| `file`), `multiple?`, `disk?`, `directory?` |
+| `media-selected` | Browser → You | `statePath`, `url`, `alt`, `title`, `filename`, `extension`, `size`, `mime` |
 
 ### Media Types
 
