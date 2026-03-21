@@ -2,6 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.1.1 - 2026-03-21
+
+### Fixed
+- SVG files (`image/svg+xml`, `image/svg`) now included in `image/*` MIME type expansion, fixing upload validation failure for SVG files
+
 ## v1.1.0 - 2026-03-21
 
 ### Added
