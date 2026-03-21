@@ -257,6 +257,16 @@ it('uploads a file to current directory', function () {
         ->and($files[0])->toContain('test-photo');
 });
 
+it('allows SVG mime type in image/* wildcard expansion', function () {
+    $accepted = ['image/*'];
+
+    $modal = new MediaBrowserModal;
+    $rules = (new \ReflectionMethod($modal, 'buildMimeValidationRules'))->invoke($modal, $accepted);
+
+    expect($rules)->toContain('image/svg+xml')
+        ->and($rules)->toContain('image/svg');
+});
+
 it('uploads multiple files at once', function () {
     $file1 = UploadedFile::fake()->image('photo-a.jpg');
     $file2 = UploadedFile::fake()->image('photo-b.jpg');

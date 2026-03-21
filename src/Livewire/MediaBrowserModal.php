@@ -624,9 +624,9 @@ class MediaBrowserModal extends Component
 
         foreach ($acceptedFileTypes as $type) {
             if ($type === 'image/*') {
-                array_push($mimes, 'image/jpeg', 'image/png', 'image/gif', 'image/webp');
+                array_push($mimes, 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/svg');
             } elseif ($type === 'image/svg+xml') {
-                $mimes[] = 'image/svg+xml';
+                array_push($mimes, 'image/svg+xml', 'image/svg');
             } elseif ($type === 'video/*') {
                 array_push($mimes, 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime');
             } elseif ($type === 'audio/*') {
