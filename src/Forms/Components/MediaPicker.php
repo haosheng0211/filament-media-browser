@@ -25,6 +25,8 @@ class MediaPicker extends Field
 
     protected bool|Closure $isReorderable = true;
 
+    protected bool|Closure $shouldStoreAsUrl = true;
+
     public function mediaType(string|Closure $type): static
     {
         $this->mediaType = $type;
@@ -74,6 +76,20 @@ class MediaPicker extends Field
         return $this;
     }
 
+    public function storeAsUrl(bool|Closure $condition = true): static
+    {
+        $this->shouldStoreAsUrl = $condition;
+
+        return $this;
+    }
+
+    public function storePath(bool|Closure $condition = true): static
+    {
+        $this->shouldStoreAsUrl = fn (): bool => ! $this->evaluate($condition);
+
+        return $this;
+    }
+
     public function getMediaType(): string
     {
         return $this->evaluate($this->mediaType);
@@ -109,12 +125,18 @@ class MediaPicker extends Field
         return $this->evaluate($this->isReorderable);
     }
 
+    public function shouldStoreAsUrl(): bool
+    {
+        return $this->evaluate($this->shouldStoreAsUrl);
+    }
+
     public function getDispatchParams(): array
     {
         $params = [
             'statePath' => $this->getStatePath(),
             'mediaType' => $this->getMediaType(),
             'multiple' => $this->isMultiple(),
+            'storeAsUrl' => $this->shouldStoreAsUrl(),
         ];
 
         $disk = $this->getMediaDisk();

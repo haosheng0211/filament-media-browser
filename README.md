@@ -76,7 +76,7 @@ return [
 
 ### MediaPicker Field
 
-A dedicated form field with image preview, replace and remove buttons. Stores the selected file's URL as a string (single) or array of strings (multiple).
+A dedicated form field with image preview, replace and remove buttons. Stores the selected file's URL as a string (single) or array of strings (multiple) by default.
 
 ```php
 use MrJin\FilamentMediaBrowser\Forms\Components\MediaPicker;
@@ -98,11 +98,16 @@ MediaPicker::make('attachment')
 MediaPicker::make('hero_image')
     ->mediaDisk('s3')
     ->mediaDirectory('uploads/heroes');
+
+// Store relative path instead of URL
+MediaPicker::make('document')
+    ->storePath();
 ```
 
 **Stored value:**
-- Single mode: string URL (e.g. `/storage/media/photo.jpg`) — use a `string` column
-- Multiple mode: array of URL strings — use a `json` column with `->cast('array')` on the model
+- Single mode: string (e.g. `/storage/media/photo.jpg`) — use a `string` column
+- Multiple mode: array of strings — use a `json` column with `->cast('array')` on the model
+- Default output is `Storage::url()` (full URL). Use `->storePath()` to store the relative path (e.g. `media/photo.jpg`) instead.
 
 #### Available Methods
 
@@ -114,6 +119,8 @@ MediaPicker::make('hero_image')
 | `->mediaType(string)` | `'image'` (default), `'media'`, or `'file'` |
 | `->mediaDisk(string)` | Override config disk |
 | `->mediaDirectory(string)` | Override config directory |
+| `->storeAsUrl(bool)` | Store as `Storage::url()` output (default: true) |
+| `->storePath(bool)` | Store as relative path (e.g. `media/photo.jpg`) |
 
 ### With Filament Forms TinyMCE
 
@@ -151,6 +158,13 @@ $this->dispatch('open-media-browser',
     multiple: true,
     disk: 's3',
     directory: 'uploads',
+);
+
+// Store relative path instead of URL
+$this->dispatch('open-media-browser',
+    statePath: 'data.document',
+    mediaType: 'file',
+    storeAsUrl: false,
 );
 ```
 
@@ -192,7 +206,7 @@ public function onMediaSelected(
 
 | Event | Direction | Parameters |
 |---|---|---|
-| `open-media-browser` | You → Browser | `statePath`, `mediaType` (`image` \| `media` \| `file`), `multiple?`, `disk?`, `directory?` |
+| `open-media-browser` | You → Browser | `statePath`, `mediaType` (`image` \| `media` \| `file`), `multiple?`, `disk?`, `directory?`, `storeAsUrl?` |
 | `media-selected` | Browser → You | `statePath`, `url`, `alt`, `title`, `filename`, `extension`, `size`, `mime` |
 
 ### Media Types

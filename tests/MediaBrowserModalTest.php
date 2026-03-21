@@ -360,6 +360,32 @@ it('resets selectedFiles on open', function () {
         ->assertSet('selectedFiles', []);
 });
 
+it('dispatches url by default when storeAsUrl is true', function () {
+    Storage::disk('public')->put('media/photo.jpg', 'fake');
+
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', storeAsUrl: true)
+        ->call('selectFile', 'media/photo.jpg')
+        ->assertDispatched('media-selected', fn (string $name, array $params) => str_starts_with($params['url'], 'http') || str_starts_with($params['url'], '/')
+        );
+});
+
+it('dispatches raw path when storeAsUrl is false', function () {
+    Storage::disk('public')->put('media/photo.jpg', 'fake');
+
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', storeAsUrl: false)
+        ->call('selectFile', 'media/photo.jpg')
+        ->assertDispatched('media-selected', fn (string $name, array $params) => $params['url'] === 'media/photo.jpg'
+        );
+});
+
+it('defaults storeAsUrl to true when not provided', function () {
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image')
+        ->assertSet('storeAsUrl', true);
+});
+
 it('prevents selecting files outside root directory', function () {
     Storage::disk('public')->put('secret/data.txt', 'secret');
 
@@ -453,6 +479,46 @@ it('prevents deleteFolderByPath outside root directory', function () {
         ->call('deleteFolderByPath', 'secret');
 
     Storage::disk('public')->assertExists('secret');
+});
+
+// --- Disk & Directory Validation ---
+
+it('falls back to default disk when invalid disk is provided', function () {
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', disk: 'nonexistent-disk')
+        ->assertSet('disk', 'public');
+});
+
+it('falls back to default directory when empty directory is provided', function () {
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', directory: '')
+        ->assertSet('directory', 'media');
+});
+
+it('falls back to default directory when traversal directory is provided', function () {
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', directory: '../etc')
+        ->assertSet('directory', 'media');
+});
+
+it('falls back to default directory when absolute path directory is provided', function () {
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', directory: '/etc/passwd')
+        ->assertSet('directory', 'media');
+});
+
+it('blocks direct frontend modification of disk property', function () {
+    expect(fn () => Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image')
+        ->set('disk', 'local')
+    )->toThrow(\RuntimeException::class, 'Direct modification of disk is not allowed.');
+});
+
+it('blocks direct frontend modification of directory property', function () {
+    expect(fn () => Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image')
+        ->set('directory', '')
+    )->toThrow(\RuntimeException::class, 'Direct modification of directory is not allowed.');
 });
 
 // --- Authentication ---

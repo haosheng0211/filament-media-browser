@@ -46,6 +46,27 @@ class MediaBrowserModal extends Component
      */
     public string $directory = '';
 
+    /**
+     * Whether to output Storage::url() or the raw path.
+     */
+    public bool $storeAsUrl = true;
+
+    /**
+     * Prevent direct frontend manipulation of the disk property.
+     */
+    public function updatingDisk(string $value): void
+    {
+        throw new \RuntimeException('Direct modification of disk is not allowed.');
+    }
+
+    /**
+     * Prevent direct frontend manipulation of the directory property.
+     */
+    public function updatingDirectory(string $value): void
+    {
+        throw new \RuntimeException('Direct modification of directory is not allowed.');
+    }
+
     #[On('open-media-browser')]
     public function openBrowser(
         string $statePath = '',
@@ -53,14 +74,16 @@ class MediaBrowserModal extends Component
         bool $multiple = false,
         ?string $disk = null,
         ?string $directory = null,
+        bool $storeAsUrl = true,
     ): void {
         $this->ensureAuthenticated();
 
         $this->statePath = $statePath;
         $this->mediaType = in_array($mediaType, ['image', 'media', 'file'], true) ? $mediaType : 'image';
         $this->multiple = $multiple;
-        $this->disk = $disk ?? config('filament-media-browser.disk', 'public');
-        $this->directory = $directory ?? config('filament-media-browser.directory', 'media');
+        $this->disk = $this->resolveDisk($disk);
+        $this->directory = $this->resolveDirectory($directory);
+        $this->storeAsUrl = $storeAsUrl;
         $this->currentPath = $this->directory;
         $this->search = '';
         $this->newFolderName = '';
@@ -363,7 +386,7 @@ class MediaBrowserModal extends Component
             return;
         }
 
-        $url = $storage->url($path);
+        $value = $this->storeAsUrl ? $storage->url($path) : $path;
         $basename = basename($path);
         $name = pathinfo($path, PATHINFO_FILENAME);
         $extension = strtoupper(pathinfo($path, PATHINFO_EXTENSION) ?: '');
@@ -373,7 +396,7 @@ class MediaBrowserModal extends Component
         $this->dispatch(
             'media-selected',
             statePath: $this->statePath,
-            url: $url,
+            url: $value,
             alt: $name,
             title: $name,
             filename: $basename,
@@ -508,6 +531,38 @@ class MediaBrowserModal extends Component
     }
 
     // --- Helpers ---
+
+    /**
+     * Validate and resolve the disk name.
+     * Only allows disks that are actually configured in filesystems.php.
+     */
+    protected function resolveDisk(?string $disk): string
+    {
+        $resolved = $disk ?? config('filament-media-browser.disk', 'public');
+
+        // Only allow disks that exist in the Laravel filesystem config
+        if (config("filesystems.disks.{$resolved}") === null) {
+            return config('filament-media-browser.disk', 'public');
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Validate and resolve the root directory.
+     * Prevents empty or traversal-based directory values.
+     */
+    protected function resolveDirectory(?string $directory): string
+    {
+        $resolved = $directory ?? config('filament-media-browser.directory', 'media');
+
+        // Reject empty, traversal, or absolute paths
+        if ($resolved === '' || str_contains($resolved, '..') || str_starts_with($resolved, '/')) {
+            return config('filament-media-browser.directory', 'media');
+        }
+
+        return $resolved;
+    }
 
     protected function ensureAuthenticated(): void
     {

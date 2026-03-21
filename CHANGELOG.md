@@ -2,6 +2,14 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.1.0 - 2026-03-21
+
+### Added
+- `storeAsUrl()` / `storePath()` methods on MediaPicker to choose between storing `Storage::url()` output or the raw relative path
+- Disk validation — rejects unconfigured disk names, falls back to config default
+- Directory validation — rejects empty strings, path traversal (`..`), and absolute paths
+- Frontend tampering protection — blocks direct `$wire.set()` modification of `disk` and `directory` properties
+
 ## v1.0.0 - 2026-03-15
 
 Initial release.
