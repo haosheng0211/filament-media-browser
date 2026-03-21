@@ -396,6 +396,32 @@ it('defaults storeAsUrl to true when not provided', function () {
         ->assertSet('storeAsUrl', true);
 });
 
+it('reads storeAsUrl default from config when not provided', function () {
+    config()->set('filament-media-browser.store_as_url', false);
+
+    Storage::disk('public')->put('media/photo.jpg', 'fake');
+
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image')
+        ->assertSet('storeAsUrl', false)
+        ->call('selectFile', 'media/photo.jpg')
+        ->assertDispatched('media-selected', fn (string $name, array $params) => $params['url'] === 'media/photo.jpg'
+        );
+});
+
+it('per-field storeAsUrl overrides config default', function () {
+    config()->set('filament-media-browser.store_as_url', false);
+
+    Storage::disk('public')->put('media/photo.jpg', 'fake');
+
+    Livewire::test(MediaBrowserModal::class)
+        ->dispatch('open-media-browser', statePath: 'data.content', mediaType: 'image', storeAsUrl: true)
+        ->assertSet('storeAsUrl', true)
+        ->call('selectFile', 'media/photo.jpg')
+        ->assertDispatched('media-selected', fn (string $name, array $params) => str_starts_with($params['url'], 'http') || str_starts_with($params['url'], '/')
+        );
+});
+
 it('prevents selecting files outside root directory', function () {
     Storage::disk('public')->put('secret/data.txt', 'secret');
 

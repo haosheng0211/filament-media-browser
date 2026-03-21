@@ -74,7 +74,7 @@ class MediaBrowserModal extends Component
         bool $multiple = false,
         ?string $disk = null,
         ?string $directory = null,
-        bool $storeAsUrl = true,
+        ?bool $storeAsUrl = null,
     ): void {
         $this->ensureAuthenticated();
 
@@ -83,7 +83,7 @@ class MediaBrowserModal extends Component
         $this->multiple = $multiple;
         $this->disk = $this->resolveDisk($disk);
         $this->directory = $this->resolveDirectory($directory);
-        $this->storeAsUrl = $storeAsUrl;
+        $this->storeAsUrl = $storeAsUrl ?? (bool) config('filament-media-browser.store_as_url', true);
         $this->currentPath = $this->directory;
         $this->search = '';
         $this->newFolderName = '';

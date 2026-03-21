@@ -69,6 +69,9 @@ return [
 
     // Max upload size in KB
     'max_file_size' => 10240,
+
+    // Output format: true = Storage::url(), false = relative path
+    'store_as_url' => true,
 ];
 ```
 

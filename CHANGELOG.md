@@ -2,7 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
-## v1.1.1 - 2026-03-21
+## v1.2.0 - 2026-03-21
+
+### Added
+- Global `store_as_url` config option — set default output format for all MediaPicker fields without per-field override
+- Per-field `storeAsUrl()` / `storePath()` still takes precedence over config
 
 ### Fixed
 - SVG files (`image/svg+xml`, `image/svg`) now included in `image/*` MIME type expansion, fixing upload validation failure for SVG files

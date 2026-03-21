@@ -25,7 +25,7 @@ class MediaPicker extends Field
 
     protected bool|Closure $isReorderable = true;
 
-    protected bool|Closure $shouldStoreAsUrl = true;
+    protected bool|Closure|null $shouldStoreAsUrl = null;
 
     public function mediaType(string|Closure $type): static
     {
@@ -127,7 +127,13 @@ class MediaPicker extends Field
 
     public function shouldStoreAsUrl(): bool
     {
-        return $this->evaluate($this->shouldStoreAsUrl);
+        $value = $this->evaluate($this->shouldStoreAsUrl);
+
+        if ($value === null) {
+            return (bool) config('filament-media-browser.store_as_url', true);
+        }
+
+        return $value;
     }
 
     public function getDispatchParams(): array
