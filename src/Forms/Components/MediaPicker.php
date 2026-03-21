@@ -6,6 +6,7 @@ namespace MrJin\FilamentMediaBrowser\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Illuminate\Support\Facades\Storage;
 
 class MediaPicker extends Field
 {
@@ -134,6 +135,22 @@ class MediaPicker extends Field
         }
 
         return $value;
+    }
+
+    public function getPreviewBaseUrl(): ?string
+    {
+        if ($this->shouldStoreAsUrl()) {
+            return null;
+        }
+
+        $disk = $this->getMediaDisk() ?? config('filament-media-browser.disk', 'public');
+        $storage = Storage::disk($disk);
+
+        // Use Storage::url() to get the proper base URL for the disk,
+        // which correctly handles local, S3, and custom disks.
+        $base = $storage->url('');
+
+        return rtrim($base, '/') . '/';
     }
 
     public function getDispatchParams(): array

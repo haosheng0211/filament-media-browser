@@ -6,6 +6,7 @@
     $maxItems = $getMaxItems();
     $isReorderable = $isReorderable();
     $mediaType = $getMediaType();
+    $previewBaseUrl = $getPreviewBaseUrl();
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
@@ -14,11 +15,19 @@
             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
             multiple: @js($isMultiple),
             maxItems: @js($maxItems),
+            previewBaseUrl: @js($previewBaseUrl),
             dragging: null,
             dragOver: null,
 
             {{-- File metadata store: { url: { filename, extension, size, mime } } --}}
             fileMeta: {},
+
+            previewUrl(value) {
+                if (!value) return ''
+                if (!this.previewBaseUrl) return value
+                if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('/')) return value
+                return this.previewBaseUrl + value
+            },
 
             open() {
                 if (this.multiple && this.maxItems && this.items.length >= this.maxItems) return
@@ -180,7 +189,7 @@
                                     {{-- Image preview --}}
                                     <template x-if="isImage(url)">
                                         <img
-                                            x-bind:src="url"
+                                            x-bind:src="previewUrl(url)"
                                             alt=""
                                             class="w-full h-full object-cover"
                                             loading="lazy"
@@ -333,7 +342,7 @@
                         {{-- Image preview --}}
                         <template x-if="isImage(state)">
                             <img
-                                x-bind:src="state"
+                                x-bind:src="previewUrl(state)"
                                 alt=""
                                 class="w-full h-full object-cover"
                                 loading="lazy"

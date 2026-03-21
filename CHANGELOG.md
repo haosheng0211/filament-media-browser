@@ -10,6 +10,7 @@ All notable changes to `filament-media-browser` will be documented in this file.
 
 ### Fixed
 - SVG files (`image/svg+xml`, `image/svg`) now included in `image/*` MIME type expansion, fixing upload validation failure for SVG files
+- MediaPicker preview now works correctly when `store_as_url` is `false` — relative paths are resolved to proper URLs via `Storage::url()` for display
 
 ## v1.1.0 - 2026-03-21
 
