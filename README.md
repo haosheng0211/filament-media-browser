@@ -79,7 +79,7 @@ return [
 
 ### MediaPicker Field
 
-A dedicated form field with image preview, replace and remove buttons. Stores the selected file's URL as a string (single) or array of strings (multiple) by default.
+A dedicated form field with square card previews, replace and remove buttons. Both single and multiple modes use the same grid layout with 1:1 aspect ratio cards. Stores the selected file's URL as a string (single) or array of strings (multiple) by default.
 
 ```php
 use MrJin\FilamentMediaBrowser\Forms\Components\MediaPicker;

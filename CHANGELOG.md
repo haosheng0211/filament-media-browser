@@ -2,6 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.2.1 - 2026-03-22
+
+### Changed
+- Unified single and multiple mode MediaPicker to use the same square (1:1) card layout and grid system for consistent appearance
+
 ## v1.2.0 - 2026-03-21
 
 ### Added
