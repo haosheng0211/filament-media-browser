@@ -336,9 +336,10 @@
         @else
             {{-- Single mode --}}
             <template x-if="state">
+                <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
                 <div class="group overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-                    {{-- Preview area (16:9) --}}
-                    <div class="relative bg-gray-100 dark:bg-gray-800" style="aspect-ratio: 12/3">
+                    {{-- Preview area (1:1) --}}
+                    <div class="relative bg-gray-100 dark:bg-gray-800" style="aspect-ratio: 1/1">
                         {{-- Image preview --}}
                         <template x-if="isImage(state)">
                             <img
@@ -429,41 +430,29 @@
                             </div>
                         @endunless
                     </div>
-
-                    {{-- Info bar --}}
-                    <div class="px-3 py-2 flex items-center justify-between gap-2">
-                        <span class="text-sm text-gray-700 dark:text-gray-200 truncate" x-text="getMeta(state).filename"></span>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span
-                                class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-800 px-1.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400 ring-1 ring-inset ring-gray-500/10 dark:ring-gray-400/20"
-                                x-text="getMeta(state).extension"
-                            ></span>
-                            <template x-if="getMeta(state).size !== null">
-                                <span class="text-xs text-gray-400 dark:text-gray-500" x-text="formatSize(getMeta(state).size)"></span>
-                            </template>
-                        </div>
-                    </div>
+                </div>
                 </div>
             </template>
 
-            {{-- Empty state (16:9) --}}
+            {{-- Empty state (1:1) --}}
             <template x-if="!state">
-                <button
-                    type="button"
-                    x-on:click="open()"
-                    @disabled($isDisabled)
-                    class="w-full flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 transition hover:border-primary-500 hover:text-primary-500 dark:hover:border-primary-500 dark:hover:text-primary-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:text-gray-400"
-                    style="aspect-ratio: 12/3"
-                >
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        @if($mediaType === 'image')
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        @else
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-                        @endif
-                    </svg>
-                    <span class="text-sm font-medium">{{ __('filament-media-browser::messages.choose_file') }}</span>
-                </button>
+                <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+                    <button
+                        type="button"
+                        x-on:click="open()"
+                        @disabled($isDisabled)
+                        class="flex flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 transition hover:border-primary-500 hover:text-primary-500 dark:hover:border-primary-500 dark:hover:text-primary-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:text-gray-400"
+                        style="aspect-ratio: 1/1"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            @if($mediaType === 'image')
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            @else
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                            @endif
+                        </svg>
+                    </button>
+                </div>
             </template>
         @endif
     </div>
