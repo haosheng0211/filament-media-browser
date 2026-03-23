@@ -105,6 +105,10 @@ MediaPicker::make('hero_image')
 // Store relative path instead of URL
 MediaPicker::make('document')
     ->storePath();
+
+// Custom grid columns (default: 5, fewer = larger cards)
+MediaPicker::make('hero')
+    ->gridColumns(3);
 ```
 
 **Stored value:**
@@ -124,6 +128,7 @@ MediaPicker::make('document')
 | `->mediaDirectory(string)` | Override config directory |
 | `->storeAsUrl(bool)` | Store as `Storage::url()` output (default: true) |
 | `->storePath(bool)` | Store as relative path (e.g. `media/photo.jpg`) |
+| `->gridColumns(int)` | Number of columns in the preview grid (default: 5) |
 
 ### With Filament Forms TinyMCE
 

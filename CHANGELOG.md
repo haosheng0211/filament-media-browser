@@ -2,6 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.3.0 - 2026-03-23
+
+### Added
+- `gridColumns(int)` method on MediaPicker to customize the number of columns in the preview grid (default: 5, fewer columns = larger cards)
+
 ## v1.2.1 - 2026-03-22
 
 ### Changed

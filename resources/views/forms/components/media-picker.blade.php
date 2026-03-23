@@ -7,6 +7,8 @@
     $isReorderable = $isReorderable();
     $mediaType = $getMediaType();
     $previewBaseUrl = $getPreviewBaseUrl();
+    $gridColumns = $getGridColumns();
+    $gridStyle = "grid-template-columns: repeat({$gridColumns}, minmax(0, 1fr))";
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
@@ -169,7 +171,7 @@
             <div class="flex flex-col gap-3">
                 {{-- Item grid --}}
                 <template x-if="items.length > 0">
-                    <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+                    <div class="grid gap-3" style="{{ $gridStyle }}">
                         <template x-for="(url, index) in items" x-bind:key="url + '-' + index">
                             <div
                                 class="group overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition"
@@ -336,7 +338,7 @@
         @else
             {{-- Single mode --}}
             <template x-if="state">
-                <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+                <div class="grid gap-3" style="{{ $gridStyle }}">
                 <div class="group overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
                     {{-- Preview area (1:1) --}}
                     <div class="relative bg-gray-100 dark:bg-gray-800" style="aspect-ratio: 1/1">
@@ -436,7 +438,7 @@
 
             {{-- Empty state (1:1) --}}
             <template x-if="!state">
-                <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+                <div class="grid gap-3" style="{{ $gridStyle }}">
                     <button
                         type="button"
                         x-on:click="open()"

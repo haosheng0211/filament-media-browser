@@ -28,6 +28,8 @@ class MediaPicker extends Field
 
     protected bool|Closure|null $shouldStoreAsUrl = null;
 
+    protected int|Closure $gridColumns = 5;
+
     public function mediaType(string|Closure $type): static
     {
         $this->mediaType = $type;
@@ -73,6 +75,13 @@ class MediaPicker extends Field
     public function reorderable(bool|Closure $condition = true): static
     {
         $this->isReorderable = $condition;
+
+        return $this;
+    }
+
+    public function gridColumns(int|Closure $gridColumns): static
+    {
+        $this->gridColumns = $gridColumns;
 
         return $this;
     }
@@ -124,6 +133,11 @@ class MediaPicker extends Field
     public function isReorderable(): bool
     {
         return $this->evaluate($this->isReorderable);
+    }
+
+    public function getGridColumns(): int
+    {
+        return $this->evaluate($this->gridColumns);
     }
 
     public function shouldStoreAsUrl(): bool
