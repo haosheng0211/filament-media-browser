@@ -281,20 +281,6 @@
                                         @endif
                                     @endunless
                                 </div>
-
-                                {{-- Info bar --}}
-                                <div class="px-2 py-1.5">
-                                    <p class="text-xs text-gray-600 dark:text-gray-300 truncate" x-text="getMeta(url).filename"></p>
-                                    <div class="flex items-center gap-1.5 mt-0.5">
-                                        <span
-                                            class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-800 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:text-gray-400 ring-1 ring-inset ring-gray-500/10 dark:ring-gray-400/20"
-                                            x-text="getMeta(url).extension"
-                                        ></span>
-                                        <template x-if="getMeta(url).size !== null">
-                                            <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="formatSize(getMeta(url).size)"></span>
-                                        </template>
-                                    </div>
-                                </div>
                             </div>
                         </template>
 
