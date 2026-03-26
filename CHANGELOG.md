@@ -2,6 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.3.2 - 2026-03-26
+
+### Fixed
+- Multiple mode empty state now shows a single square button in the grid instead of a full-width block
+
 ## v1.3.1 - 2026-03-26
 
 ### Fixed
