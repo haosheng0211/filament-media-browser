@@ -2,6 +2,11 @@
 
 All notable changes to `filament-media-browser` will be documented in this file.
 
+## v1.3.1 - 2026-03-26
+
+### Fixed
+- Removed info bar from multiple mode cards to match single mode — both now display pure square cards with hover-only action buttons
+
 ## v1.3.0 - 2026-03-23
 
 ### Added
